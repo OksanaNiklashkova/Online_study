@@ -3,6 +3,7 @@ from tkinter.constants import CASCADE
 from django.db import models
 
 class Course(models.Model):
+    """модель обучающего курса"""
     title = models.CharField(max_length=150, verbose_name='название курса')
     preview = models.ImageField(
         upload_to='images/',
@@ -25,6 +26,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """модель урока из обучающего курса"""
     title = models.CharField(max_length=150, verbose_name='название урока')
     order = models.PositiveIntegerField(
         default=0,
