@@ -9,10 +9,10 @@ from users.models import User, Payment
 
 
 class Command(BaseCommand):
-    help = "заполняет БД объектами модели платеж, создает по 10 объектов с рандомными данными за один запуск"
+    help = "заполняет БД объектами модели платеж, создает по 3 объекта с рандомными данными за один запуск"
 
     def handle(self, *args, **options):
-        count = 10
+        count = 3
 
         courses = Course.objects.all()
         lessons = Lesson.objects.all()
@@ -23,19 +23,19 @@ class Command(BaseCommand):
 
         for i in range(count):
             try:
-                # Случайный пользователь
+                # случайный пользователь
                 user = random.choice(users)
 
-                # Случайная дата (последние 30 дней)
+                # случайная дата (последние 30 дней)
                 payment_date = date.today() - timedelta(days=random.randint(0, 30))
 
-                # Случайная сумма (от 1000 до 10000)
+                # случайная сумма (от 1000 до 10000)
                 amount = round(random.uniform(1000, 10000), 2)
 
-                # Случайный метод оплаты
+                # случайный метод оплаты
                 payment_method = random.choice(payment_methods)
 
-                # Создаем платеж
+                # создаем объект модели платеж
                 payment = Payment.objects.create(
                     user=user,
                     payment_date=payment_date,
@@ -43,14 +43,21 @@ class Command(BaseCommand):
                     payment_method=payment_method
                 )
 
-                # Добавляем случайный курс или урок
-                if courses.exists() and random.choice([True, False]):
-                    course = random.choice(courses)
-                    payment.paid_course.add(course)
+                # добавляем случайный курс или урок
+                has_course_or_lesson = False
 
-                if lessons.exists() and random.choice([True, False]):
-                    lesson = random.choice(lessons)
-                    payment.paid_lesson.add(lesson)
+                while not has_course_or_lesson:
+                    # проверка, что в оплате есть хотя бы один объект расчета - курс или урок
+
+                    if courses.exists() and random.choice([True, False]):
+                        course = random.choice(courses)
+                        payment.paid_course.add(course)
+                        has_course_or_lesson = True
+
+                    if lessons.exists() and random.choice([True, False]):
+                        lesson = random.choice(lessons)
+                        payment.paid_lesson.add(lesson)
+                        has_course_or_lesson = True
 
                 created_count += 1
 

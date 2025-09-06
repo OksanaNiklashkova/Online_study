@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+from users.models import User, Payment
+from users.serializers import UserSerializer, PaymentSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    """вьюсет представлений для объектов модели пользователя"""
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+class PaymentViewSet(viewsets.ModelViewSet):
+    """вьюсет представлений для объектов модели платежа"""
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
