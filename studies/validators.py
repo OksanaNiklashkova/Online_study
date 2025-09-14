@@ -11,14 +11,17 @@ class VideoUrlValidator:
 
     def __call__(self, value):
         url_pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+[/\w\.-]*\??[/\w\.-=&%]*'
-        temp_value = dict(value).get(self.field)
-        urls = re.findall(url_pattern, temp_value)
-        for url in urls:
-            parsed_url = urlparse(url)
-            domain = parsed_url.netloc.lower()
+        for item in self.field:
+            temp_value = dict(value).get(item)
+            if temp_value:
+                urls = re.findall(url_pattern, temp_value)
 
-            # Разрешаем только YouTube
-            allowed_domains = ['youtube.com', 'www.youtube.com', 'youtu.be']
+                for url in urls:
+                    parsed_url = urlparse(url)
+                    domain = parsed_url.netloc.lower()
 
-            if not any(allowed_domain in domain for allowed_domain in allowed_domains):
-                raise serializers.ValidationError("Разрешены только ссылки на YouTube")
+                    # Разрешаем только YouTube
+                    allowed_domains = ['youtube.com', 'www.youtube.com', 'youtu.be']
+
+                    if not any(allowed_domain in domain for allowed_domain in allowed_domains):
+                        raise serializers.ValidationError("Разрешены только ссылки на YouTube")

@@ -1,9 +1,12 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from studies.models import Course, Lesson
+from studies.models import Course, Lesson, Subscribe
 from studies.paginators import StudiesPagination
-from studies.serializers import CourseSerializer, LessonSerializer
+from studies.serializers import CourseSerializer, LessonSerializer, SubscribeSerializer
 from users.permissions import IsModer, IsOwner
 
 
@@ -34,8 +37,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
 
-
-
 class LessonCreateAPIView(generics.CreateAPIView):
     """представление для создания объекта Урок"""
     serializer_class = LessonSerializer
@@ -61,14 +62,6 @@ class LessonListAPIView(generics.ListAPIView):
     permission_classes = (IsOwner | IsModer,)
     pagination_class = StudiesPagination
 
-    def get(self, request):
-        queryset = Lesson.objects.all()
-        paginated_queryset = self.paginate_queryset(queryset)
-        serializer = LessonSerializer(paginated_queryset, many=True)
-        return self.get_paginated_response(serializer.data)
-
-
-
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
     """представление для редактирования объекта Урок"""
@@ -81,3 +74,25 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
     """представление для удаления объекта Урок"""
     queryset = Lesson.objects.all()
     permission_classes = (IsOwner|~IsModer,)
+
+
+class SubscribeAPIView(APIView):
+    """контроллер для управления подписками"""
+    serializer_class = SubscribeSerializer
+    queryset = Subscribe.objects.all()
+
+    def post(self, request):
+        user = request.user
+        course_id = request.data.get('course')
+        course = get_object_or_404(Course, id=course_id)
+        subscribe = Subscribe.objects.filter(user=user, course=course).first()
+        # Если подписка у пользователя на этот курс есть - удаляем ее
+        if subscribe:
+            subscribe.delete()
+            message = 'подписка удалена'
+        # Если подписки у пользователя на этот курс нет - создаем ее
+        else:
+            Subscribe.objects.create(user=user, course=course)
+            message = 'подписка добавлена'
+        # Возвращаем ответ в API
+        return Response({"message": message})
