@@ -15,6 +15,8 @@ class Course(models.Model):
         null=True,
     )
     description = models.TextField(blank=True, null=True, verbose_name='описание курса')
+    price = models.PositiveIntegerField(default=999, verbose_name='стоимость курса')
+    is_available = models.BooleanField(default=False, verbose_name='доступность')
     owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=CASCADE, blank=True, null=True, verbose_name='владелец курса')
 
     class Meta:
