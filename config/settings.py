@@ -1,9 +1,12 @@
 import os
 from datetime import timedelta
+from os import getenv
 from pathlib import Path
 
 from django.conf.global_settings import CSRF_TRUSTED_ORIGINS
+from django.urls import reverse
 from dotenv import load_dotenv
+from rest_framework.reverse import reverse_lazy
 
 load_dotenv(override=True)
 
@@ -128,8 +131,15 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
+    'https://dashboard.stripe.com'
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
+    'https://dashboard.stripe.com'
 ]
 CORS_ALLOW_ALL_ORIGINS = False
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SUCCESS_URL = 'http://127.0.0.1:8000/users/payment/success/'
+STRIPE_CANCEL_URL = 'http://127.0.0.1:8000/users/payment/cancel/'
