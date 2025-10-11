@@ -76,16 +76,13 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-
       - name: Deploy to Server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online_work:${{ github.sha }}
-          docker stop online_work || true
-          docker rm online_work || true
-          docker run -d --name online_work -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/online_work:${{ github.sha }}
-          EOF
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker-compose down || true
+            rsync -avz --delete --exclude='.env' ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/myproject/
+            cd ~/myproject && docker-compose up -d
