@@ -50,6 +50,7 @@ jobs:
     - name: Run tests
       run: python manage.py test
 
+
   build:
     needs: test
     runs-on: ubuntu-latest

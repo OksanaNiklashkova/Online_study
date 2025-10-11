@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -95,13 +97,17 @@ class CourseAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Course.objects.all().count(), 1)
 
-    def test_course_update(self):
+    @patch('studies.tasks.send_course_update_email.delay')
+    def test_course_update(self, mock_send_email):
         url = reverse('studies:courses-detail', args=(self.course.pk,))
         data = {"title": "Test-course2"}
         response = self.client.patch(url, data)
         result = response.json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(result.get("title"), "Test-course2")
+
+        # Проверяем, что задача была вызвана
+        mock_send_email.assert_called_once_with(self.course.pk)
 
     def test_course_delete(self):
         url = reverse('studies:courses-detail', args=(self.course.pk,))
