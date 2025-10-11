@@ -73,9 +73,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
       - name: Deploy to Server
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -83,6 +80,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker-compose down || true
-            rsync -avz --delete --exclude='.env' ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/myproject/
-            cd ~/myproject && docker-compose up -d
+
+            docker stop online_work || true
+            docker rm online_work || true
+
+            docker run -d --name online_work -p 80:8000 \
+              --env-file ~/myproject/.env \
+              ${{ secrets.DOCKER_HUB_USERNAME }}/online_work:${{ github.sha }}
