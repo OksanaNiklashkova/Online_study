@@ -1,12 +1,9 @@
 import os
 from datetime import timedelta
-from os import getenv
 from pathlib import Path
 
-from django.conf.global_settings import CSRF_TRUSTED_ORIGINS
-from django.urls import reverse
 from dotenv import load_dotenv
-from rest_framework.reverse import reverse_lazy
+
 
 load_dotenv(override=True)
 
@@ -31,10 +28,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'django_celery_beat',
-
     'users',
     'studies',
-
 ]
 
 MIDDLEWARE = [
@@ -114,9 +109,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-    ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
@@ -157,7 +150,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = "Europe/Moscow"
 CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30*60
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
 EMAIL_HOST = os.getenv("EMAIL_HOST")

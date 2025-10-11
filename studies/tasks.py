@@ -1,10 +1,11 @@
 from celery import shared_task
 
+
 @shared_task
 def send_course_update_email(course_id):
     """отправка письма об обновлении курса для подписчика"""
     from django.core.mail import send_mail
-    from studies.models import Course, Subscribe
+    from studies.models import Subscribe
     from config import settings
 
     subs = Subscribe.objects.filter(course_id=course_id).select_related('user', 'course')

@@ -39,9 +39,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "description",
-                    models.TextField(
-                        blank=True, null=True, verbose_name="описание курса"
-                    ),
+                    models.TextField(blank=True, null=True, verbose_name="описание курса"),
                 ),
             ],
             options={
@@ -69,15 +67,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "order",
-                    models.PositiveIntegerField(
-                        default=0, verbose_name="порядковый номер"
-                    ),
+                    models.PositiveIntegerField(default=0, verbose_name="порядковый номер"),
                 ),
                 (
                     "description",
-                    models.TextField(
-                        blank=True, null=True, verbose_name="описание урока"
-                    ),
+                    models.TextField(blank=True, null=True, verbose_name="описание урока"),
                 ),
                 (
                     "preview",
