@@ -80,7 +80,8 @@ jobs:
          username: ${{ secrets.SSH_USER }}
          key: ${{ secrets.SSH_KEY }}
          script: |
-           cd ~/myproject
-           rsync -avz --delete --exclude='.env' ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/myproject/
-           docker-compose down
-           docker-compose up -d
+           docker stop online_work || true
+           docker rm online_work || true
+           docker run -d --name online_work -p 80:8000 \
+            --env-file ~/myproject/.env \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/online_work:${{ github.sha }}
