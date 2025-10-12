@@ -81,5 +81,6 @@ jobs:
          key: ${{ secrets.SSH_KEY }}
          script: |
            cd ~/myproject
+           rsync -avz --delete --exclude='.env' ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/myproject/
            docker-compose down
            docker-compose up -d
