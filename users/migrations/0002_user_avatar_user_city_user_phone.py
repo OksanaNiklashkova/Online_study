@@ -24,15 +24,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="user",
             name="city",
-            field=models.CharField(
-                blank=True, max_length=50, null=True, verbose_name="Город"
-            ),
+            field=models.CharField(blank=True, max_length=50, null=True, verbose_name="Город"),
         ),
         migrations.AddField(
             model_name="user",
             name="phone",
-            field=models.CharField(
-                blank=True, max_length=15, null=True, verbose_name="Телефон"
-            ),
+            field=models.CharField(blank=True, max_length=15, null=True, verbose_name="Телефон"),
         ),
     ]

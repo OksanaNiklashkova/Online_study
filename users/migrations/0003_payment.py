@@ -27,15 +27,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "payment_date",
-                    models.DateField(
-                        auto_now_add=True, null=True, verbose_name="дата оплаты"
-                    ),
+                    models.DateField(auto_now_add=True, null=True, verbose_name="дата оплаты"),
                 ),
                 (
                     "amount",
-                    models.FloatField(
-                        blank=True, null=True, verbose_name="сумма оплаты"
-                    ),
+                    models.FloatField(blank=True, null=True, verbose_name="сумма оплаты"),
                 ),
                 (
                     "payment_method",
