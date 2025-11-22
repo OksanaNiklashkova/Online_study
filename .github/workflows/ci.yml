@@ -71,6 +71,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # при реальном деплое убрать и задать параметры в SECRETS
+    if: ${{ false }}
 
     steps:
       - name: Deploy to Server
